@@ -2,6 +2,7 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
+const path = require('path');
 
 //Sécurité
 const helmet = require('helmet'); //helmet sécurise en définissant divers en-têtes HTTP
@@ -48,20 +49,6 @@ app.use((req, res, next) => {
     );
     next();
 });
-/*
-app.use((req, res, next) => {
-    res.status(201);
-    next();
-});
-
-app.use((req, res, next) => {
-    res.json({ message: 'Votre requête est bien reçue !' });
-    next();
-});
-
-app.use((req, res, next) => {
-    console.log('Réponse envoyée avec succès !');
-});*/
 
 //Sécurité
 
@@ -71,5 +58,6 @@ app.use(hpp());
 
 //enregistrement des routes
 app.use('/api/auth', userRoutes);
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 module.exports = app;
