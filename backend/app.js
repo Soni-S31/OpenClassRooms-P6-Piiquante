@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const path = require('path');
+const Sauce = require('./models/sauceModels');
 
 //Sécurité
 const helmet = require('helmet'); //helmet sécurise en définissant divers en-têtes HTTP
@@ -14,6 +15,7 @@ const dotenv = require('dotenv').config(); //variable d'environnement pour defin
 
 //routes
 const userRoutes = require('./routes/userRoutes');
+const sauceRoutes = require('./routes/sauceRoutes');
 
 //Express
 app.use(express.json());
@@ -26,15 +28,6 @@ mongoose
     )
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'));
-
-//Sécurité
-app.use(helmet());
-
-const limiter = rateLimit({
-    windowMs: 30 * 60 * 1000, // 30 minutes
-    max: 100, // Limite chaque IP à 100 requêtes par `window` (ici, par 30 minutes)
-});
-app.use(limiter);
 
 // Définition des en-têtes CORS
 app.use((req, res, next) => {
@@ -51,13 +44,23 @@ app.use((req, res, next) => {
 });
 
 //Sécurité
+app.use(helmet());
+
+const limiter = rateLimit({
+    windowMs: 30 * 60 * 1000, // 30 minutes
+    max: 100, // Limite chaque IP à 100 requêtes par `window` (ici, par 30 minutes)
+});
+app.use(limiter);
+
+//Sécurité
 
 app.use(mongoSanitize());
 app.use(morgan('combined'));
 app.use(hpp());
 
 //enregistrement des routes
-app.use('/api/auth', userRoutes);
 app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/api/auth', userRoutes);
+app.use('/api/sauces', sauceRoutes);
 
 module.exports = app;

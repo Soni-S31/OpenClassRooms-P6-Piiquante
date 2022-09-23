@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
-const mongodbErrorHandler = require('mongoose-mongodb-errors');// plugin pour transformer les erreurs type mongodb en instance Mongoose ValidationError
+const mongodbErrorHandler = require('mongoose-mongodb-errors'); // plugin pour transformer les erreurs type mongodb en instance Mongoose ValidationError
 
 mongoose.plugin(mongodbErrorHandler);
 
