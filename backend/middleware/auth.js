@@ -7,9 +7,7 @@ module.exports = (req, res, next) => {
         const userId = decodedToken.userId;
         console.log('id from Auth');
         console.log(userId);
-        req.auth = {
-            userId: userId,
-        };
+        req.auth = { userId };
         next();
     } catch (error) {
         res.status(401).json({

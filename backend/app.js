@@ -2,8 +2,7 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const path = require('path');
-const Sauce = require('./models/sauceModels');
+const path = require('path'); // Plugin qui sert dans l'upload des images et permet de travailler avec les répertoires et chemin de fichier
 
 //Sécurité
 const helmet = require('helmet'); //helmet sécurise en définissant divers en-têtes HTTP
@@ -29,22 +28,23 @@ mongoose
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-// Définition des en-têtes CORS
+//Sécurité : Helmet extension de Node permettant de sécuriser les requêtes HTML.
+app.use(helmet());
+
+// Définition des en-têtes CORS : Authorisation et permission à l'utilisateur de récupérer, d'envoyer, d'insérer, de supprimer, de patcher et de rajouter des options
 app.use((req, res, next) => {
+    res.setHeader('Cross-Origin-Resource-Policy', 'same-site');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader(
         'Access-Control-Allow-Headers',
-        'Origin, X-Requested-With, Content, Accept, Content-type, Authorization'
+        'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization'
     );
     res.setHeader(
         'Access-Control-Allow-Methods',
-        'GET, POST, PUT, DELETE, PATH, OPTIONS'
+        'GET, POST, PUT, DELETE, PATCH, OPTIONS'
     );
     next();
 });
-
-//Sécurité
-app.use(helmet());
 
 const limiter = rateLimit({
     windowMs: 30 * 60 * 1000, // 30 minutes
@@ -60,7 +60,7 @@ app.use(hpp());
 
 //enregistrement des routes
 app.use('/images', express.static(path.join(__dirname, 'images')));
-app.use('/api/auth', userRoutes);
-app.use('/api/sauces', sauceRoutes);
 
+app.use('/api/sauces', sauceRoutes);
+app.use('/api/auth', userRoutes);
 module.exports = app;
