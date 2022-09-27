@@ -32,10 +32,23 @@ mongoose
 //Sécurité : Helmet extension de Node permettant de sécuriser les requêtes HTML.
 app.use(helmet());
 
+//Contrôle du débit du trafic envoyé ou reçu 
+const limiter = rateLimit({
+    windowMs: 30 * 60 * 1000, // 30 minutes
+    max: 100, // Limite chaque IP à 100 requêtes par `window` (ici, par 30 minutes)
+});
+app.use(limiter);
+
+//_______Sécurité
+app.use(mongoSanitize());
+app.use(morgan('combined'));
+app.use(hpp());
+
+
 //_________Définition des en-têtes CORS 
 //Authorisation et permission à l'utilisateur de récupérer, d'envoyer, d'insérer, de supprimer, de patcher et de rajouter des options
 app.use((req, res, next) => {
-    res.setHeader('Cross-Origin-Resource-Policy', 'same-site');
+    res.setHeader('Cross-Origin-Resource-Policy', 'same_site');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader(
         'Access-Control-Allow-Headers',
@@ -48,17 +61,7 @@ app.use((req, res, next) => {
     next();
 });
 
-//Contrôle du débit du trafic envoyé ou reçu 
-const limiter = rateLimit({
-    windowMs: 30 * 60 * 1000, // 30 minutes
-    max: 100, // Limite chaque IP à 100 requêtes par `window` (ici, par 30 minutes)
-});
-app.use(limiter);
 
-//_______Sécurité
-app.use(mongoSanitize());
-app.use(morgan('combined'));
-app.use(hpp());
 
 //Midleware qui permet de charger les fichiers qui sont dans le repertoire images
 app.use('/images', express.static(path.join(__dirname, 'images')));

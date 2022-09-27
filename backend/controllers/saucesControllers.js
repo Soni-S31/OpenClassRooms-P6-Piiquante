@@ -5,6 +5,7 @@ const fs = require('fs');
 
 //__________________Création nouvelle sauce
 exports.createSauce = (req, res, next) => {
+
     // Stocke les données envoyées par le front-end sous forme de form-data en les transformant en objet js
     const sauceObject = JSON.parse(req.body.sauce);
     // Supprime l'id généré et envoyé par le front-end. L'id de la sauce est créé par la base MongoDB lors de la création dans la base
@@ -34,30 +35,22 @@ exports.createSauce = (req, res, next) => {
 
 //___________________________Modifier une sauce
 exports.modifySauce = (req, res, next) => {
-    if (req.file) {
-        // si image modifiée, il faut supprimer l'ancienne image dans le dossier /images
-        Sauce.findOne({ _id: req.params.id })
-            .then(sauce => {
-                const filename = sauce.imageUrl.split('/images/')[1];
-                fs.unlink(`images/${filename}`, () => {
-                    // une fois l'ancienne image supprimée dans le dossier /images on met à jour 
-                    const sauceObject = {
-                        ...JSON.parse(req.body.sauce),
-                        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-                    }
-                    Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
-                        .then(() => res.status(200).json({ message: 'Sauce modifiée!' }))
-                        .catch(error => res.status(400).json({ error }));
-                })
-            })
-            .catch(error => res.status(500).json({ error }));
-    } else {
-        // si image non modifiée
-        const sauceObject = { ...req.body };
-        Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
-            .then(() => res.status(200).json({ message: 'Sauce modifiée!' }))
-            .catch(error => res.status(400).json({ error }));
-    }
+    const sauceObject = req.file ?
+        {
+            ...JSON.parse(req.body.sauce),
+            imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+        } : { ...req.body };
+    Sauce.findOne({ _id: req.params.id })
+        .then((sauce) => {
+            if (sauce.userId !== req.auth.userId) {
+                res.status(403).json({ error: 'Requête non authorisée' });
+            }
+            else {
+                Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
+                    .then(() => res.status(201).json({ message: 'Sauce modifiée!' }))
+                    .catch((error) => res.status(400).json({ error: error }));
+            }
+        })
 };
 
 

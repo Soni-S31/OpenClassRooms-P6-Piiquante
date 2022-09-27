@@ -1,5 +1,7 @@
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken'); // Récupération du package jsonwebtoken
 
+//Middleware de contrôle utilisé pour protéger toutes les routes pour les sécuriser
+//(contrôle du TOKEN de l'utilisateur par rapport à l'ID dans la requete)
 module.exports = (req, res, next) => {
     try {
         const token = req.headers.authorization.split(' ')[1]; //recherche du Token des entêtes d'autorisation
