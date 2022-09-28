@@ -69,6 +69,7 @@ exports.deleteSauce = (req, res, next) => {
             //controle si l'utilisateur est le créateur ou si la sauce existe dans la base
             if (sauce.userId != req.auth.userId) {
                 res.status(401).json({ message: 'Non autorisé' });
+                console.log('pas possible');
                 if (!sauce) {
                     res.status(404).json({ error: 'Sauce inexistante' });
                 }
@@ -82,6 +83,7 @@ exports.deleteSauce = (req, res, next) => {
                             res.status(200).json({
                                 message: 'Sauce supprimée !',
                             });
+
                         })
                         .catch((error) => res.status(401).json({ error }));
                 });
