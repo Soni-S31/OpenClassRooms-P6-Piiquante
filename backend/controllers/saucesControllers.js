@@ -38,19 +38,28 @@ exports.modifySauce = (req, res, next) => {
     if (req.file) {
         // si image modifiée, il faut supprimer l'ancienne image dans le dossier /images
         Sauce.findOne({ _id: req.params.id })
-            .then(sauce => {
-                const filename = sauce.imageUrl.split('/images/')[1];
-                fs.unlink(`images/${filename}`, () => {
-                    // une fois l'ancienne image supprimée dans le dossier /images on met à jour 
-                    const sauceObject = {
-                        ...JSON.parse(req.body.sauce),
-                        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+            .then((sauce) => {
+                //controle si l'utilisateur est le créateur ou si la sauce existe dans la base
+                if (sauce.userId != req.auth.userId) {
+                    res.status(403).json({ message: 'Unauthorized request' });
+                    if (!sauce) {
+                        res.status(404).json({ error: 'Sauce inexistante' });
                     }
-                    Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
-                        .then(() => res.status(200).json({ message: 'Sauce modifiée!' }))
-                        .catch(error => res.status(400).json({ error }));
-                })
+                } else {
+                    const filename = sauce.imageUrl.split('/images/')[1];
+                    fs.unlink(`images/${filename}`, () => {
+                        // une fois l'ancienne image supprimée dans le dossier /images on met à jour 
+                        const sauceObject = {
+                            ...JSON.parse(req.body.sauce),
+                            imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+                        }
+                        Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
+                            .then(() => res.status(200).json({ message: 'Sauce modifiée!' }))
+                            .catch(error => res.status(400).json({ error }));
+                    });
+                }
             })
+
             .catch(error => res.status(500).json({ error }));
     } else {
         // si image non modifiée
@@ -68,8 +77,7 @@ exports.deleteSauce = (req, res, next) => {
         .then((sauce) => {
             //controle si l'utilisateur est le créateur ou si la sauce existe dans la base
             if (sauce.userId != req.auth.userId) {
-                res.status(401).json({ message: 'Non autorisé' });
-                console.log('pas possible');
+                res.status(403).json({ message: 'Unauthorized request' });
                 if (!sauce) {
                     res.status(404).json({ error: 'Sauce inexistante' });
                 }
@@ -81,7 +89,7 @@ exports.deleteSauce = (req, res, next) => {
                     Sauce.deleteOne({ _id: req.params.id })
                         .then(() => {
                             res.status(200).json({
-                                message: 'Sauce supprimée !',
+                                message: 'Sauce supprimée !'
                             });
 
                         })
