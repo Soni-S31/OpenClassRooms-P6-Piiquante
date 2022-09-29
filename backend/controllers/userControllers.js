@@ -5,10 +5,10 @@ const passwordSchema = require('../models/password')//récupération du modèle 
 
 // Middleware pour crée un nouvel utilisateur
 exports.signup = (req, res, next) => {
-    // vérification du shéma mot de passe
+    // vérification du schéma mot de passe
     const validePassword = passwordSchema.validate(req.body.password);
     // si le mot de passe est bon
-    if (validePassword === true) {
+    validePassword === true; {
         // fonction pour hasher/crypter le mot de passe
         bcrypt
             .hash(req.body.password, 10)
@@ -26,18 +26,11 @@ exports.signup = (req, res, next) => {
                             .status(201)
                             .json({ message: "Utilisateur créé !" })
                     )
-                    // si erreur au hashage status 400 Bad Request et message en json
+                    // si erreur MP  
                     .catch((error) => res.status(400).json({ error }));
             })
-            // au cas d'une erreur status 500 Internal Server Error et message en json
             .catch((error) => res.status(500).json({ error }));
-        // si le mot de passe ou l'email ou les 2 ne sont pas bon
-    } else {
-        // information au cas le mot de passe serait invalide
-        console.log(
-            "(not = caratère invalide) manquant au mot de passe: " +
-            passwordSchema.validate(req.body.password, { list: true })
-        );
+
     }
 };
 

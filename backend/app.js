@@ -5,7 +5,7 @@ const mongoose = require('mongoose');// Plugin Mongoose pour se connecter à la 
 const path = require('path'); // Plugin qui sert dans l'upload des images et permet de travailler avec les répertoires et chemin de fichier
 
 //_______Sécurité
-const helmet = require('helmet'); //helmet sécurise les requetes HTTP, les ent-têtes ...
+const helmet = require('helmet'); //Helmet extension de Node permettant de sécuriser les requêtes HTML.
 const mongoSanitize = require('express-mongo-sanitize'); //Nettoie les données fournies par l'utilisateur pour empeché l'injection
 const morgan = require('morgan'); // journalisation de requêtes HTTP
 const rateLimit = require('express-rate-limit'); // pour limiter les demandes répétées aux API
@@ -30,7 +30,7 @@ mongoose
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-//Sécurité : Helmet extension de Node permettant de sécuriser les requêtes HTML.
+//_______Sécurité
 app.use(helmet());
 
 //Contrôle du débit du trafic envoyé ou reçu 
@@ -39,8 +39,6 @@ const limiter = rateLimit({
     max: 100, // Limite chaque IP à 100 requêtes par `window` (ici, par 30 minutes)
 });
 app.use(limiter);
-
-//_______Sécurité
 app.use(mongoSanitize());
 app.use(morgan('combined'));
 app.use(hpp());
@@ -64,10 +62,10 @@ app.use((req, res, next) => {
 
 
 
-//Midleware qui permet de charger les fichiers qui sont dans le repertoire images
+//Midleware qui permet de charger les fichiers qui sont dans le repertoire "images"
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
-// Routes pour la gestion de toute les ressources de l'API attendues - Routage
+// Routes pour la gestion de toutes les ressources de l'API attendues 
 app.use('/api/sauces', sauceRoutes);
 app.use('/api/auth', userRoutes);
 

@@ -1,9 +1,9 @@
-// Ecoute des requetes http et reponse
+// Ecoute des requetes http et réponse
 const http = require('http');// Import du package http - https requiert un certificat SSL à obtenir avec un nom de domaine
 const app = require('./app');// Import de app pour utilisation de l'application sur le serveur
 
-// La fonction normalizePort renvoie un port valide, qu'il soit fourni sous la forme d'un numéro ou d'une chaîne 
-// Cela configure le port de connection en fonction de l'environnement.
+// La fonction normalizePort renvoie un port valide fourni sous la forme d'un numéro ou d'une chaîne 
+// configure le port de connection en fonction de l'environnement.
 const normalizePort = (val) => {
     const port = parseInt(val, 10);
 
