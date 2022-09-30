@@ -1,4 +1,4 @@
-// appelle de password validator 
+// appel de password validator 
 const passwordValidator = require('password-validator');
 const passwordSchema = new passwordValidator();
 

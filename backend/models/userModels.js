@@ -12,5 +12,5 @@ const userSchema = new mongoose.Schema({
 
 userSchema.plugin(uniqueValidator);
 userSchema.plugin(mongodbErrorHandler);
-//export du schema de donnée pour utiliser le modèle user
+//export du schema de données pour utiliser le modèle user
 module.exports = mongoose.model('User', userSchema);
