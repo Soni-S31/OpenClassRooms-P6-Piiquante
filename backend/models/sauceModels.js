@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');//imporation de mongoose
-const mongodbErrorHandler = require('mongoose-mongodb-errors');// plugin pour transformer les erreurs type mongodb en instance Mongoose ValidationError
+// plugin pour transformer les erreurs type mongodb en instance Mongoose ValidationError
+const mongodbErrorHandler = require('mongoose-mongodb-errors');
 
 //Création du schema mangoose (pour que les données de la base MongoDB soient identiques au schema Model sauce)
 // L'Id est généré par MongoDB
