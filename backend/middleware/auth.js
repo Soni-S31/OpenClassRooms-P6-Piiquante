@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken'); // Récupération du package jsonwebtoken
 module.exports = (req, res, next) => {
     try {
         const token = req.headers.authorization.split(' ')[1]; //recherche du Token des entêtes d'autorisation
-        const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET'); //Vérifie si cela correspond à la clé du token
+        const decodedToken = jwt.verify(token, process.env.TOKEN); //Vérifie si cela correspond à la clé du token
         const userId = decodedToken.userId;
         console.log('id from Auth');
         console.log(userId);

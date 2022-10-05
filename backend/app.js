@@ -4,14 +4,24 @@ const app = express();
 const mongoose = require('mongoose');// Plugin Mongoose pour se connecter à la data base Mongo Db
 const path = require('path'); // Plugin qui sert dans l'upload des images et permet de travailler avec les répertoires et chemin de fichier
 
+
 //_______Sécurité
+require('dotenv').config(); //module pour masquer les infos de connexion à la base de données à l'aide de variables d'environnement
 const helmet = require('helmet'); //Helmet extension de Node permettant de sécuriser les requêtes HTML.
 const mongoSanitize = require('express-mongo-sanitize'); //Nettoie les données fournies par l'utilisateur pour empeché l'injection
 const morgan = require('morgan'); // journalisation de requêtes HTTP
 const rateLimit = require('express-rate-limit'); // pour limiter les demandes répétées aux API
 const hpp = require('hpp'); //pour se protéger contre les attaques des paramètres HTTP
-const dotenv = require('dotenv').config(); //module pour masquer les infos de connexion à la base de données à l'aide de variables d'environnement
+require('dotenv').config(); //module pour masquer les infos de connexion à la base de données à l'aide de variables d'environnement
 
+
+//Connection MongoDB
+mongoose
+    .connect(process.env.SECRET_DB,
+        { useNewUrlParser: true, useUnifiedTopology: true }
+    )
+    .then(() => console.log('Connexion à MongoDB réussie !'))
+    .catch(() => console.log('Connexion à MongoDB échouée !'));
 
 // Déclaration des routes
 const userRoutes = require('./routes/userRoutes');
@@ -21,14 +31,7 @@ const sauceRoutes = require('./routes/sauceRoutes');
 // Création d'express
 app.use(express.json());
 
-//Connection MongoDB
-mongoose
-    .connect(
-        'mongodb+srv://newUser31:NewUser31@cluster0.qxb6ymk.mongodb.net/?retryWrites=true&w=majority',
-        { useNewUrlParser: true, useUnifiedTopology: true }
-    )
-    .then(() => console.log('Connexion à MongoDB réussie !'))
-    .catch(() => console.log('Connexion à MongoDB échouée !'));
+
 
 //_______Sécurité
 app.use(helmet());

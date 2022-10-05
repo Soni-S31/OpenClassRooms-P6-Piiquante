@@ -1,7 +1,11 @@
 const bcrypt = require('bcrypt'); // Algorithme bcrypt pour hasher le mot de passe
 const jwt = require('jsonwebtoken'); // Package jsonwebtoken pour attribuer un token à un utilisateur au moment où il se connecte
+require('dotenv').config();
+
 const User = require('../models/userModels'); //Récupération du modèle User
 const passwordSchema = require('../models/password')//récupération du modèle de mot de passe
+
+
 
 // Middleware pour crée un nouvel utilisateur
 exports.signup = (req, res, next) => {
@@ -49,10 +53,9 @@ exports.login = (req, res, next) => {
                     }
                     res.status(200).json({
                         userId: user._id,
-                        token: jwt.sign(
-                            { userId: user._id },
-                            'RANDOM_TOKEN_SECRET',
-                            { expiresIn: '24h' }
+                        token: jwt.sign({ userId: user._id }, process.env.TOKEN, {
+                            expiresIn: '24h'
+                        }
                         )
                     });
                 })
