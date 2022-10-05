@@ -146,7 +146,7 @@ exports.likeSauce = (req, res, next) => {
                 if ((sauce.usersLiked.includes(req.body.userId)) || (sauce.usersDisliked.includes(req.body.userId))) {
                     res.status(401).json({ error: 'Sauce déja liké ou disliké' });
                 } else {
-                    //ajout du dislike || (req.body.like === -1))
+                    //ajout du dislike 
                     Sauce.updateOne({ _id: req.params.id }, { $inc: { dislikes: (req.body.like++) * -1 }, $push: { usersDisliked: req.body.userId } })
                         .then((sauce) => res.status(200).json({ message: 'Dislike ajouté !' }))
                         .catch(error => res.status(400).json({ error }));
