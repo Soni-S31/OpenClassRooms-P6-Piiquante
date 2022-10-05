@@ -26,6 +26,7 @@ Le sujet du projet 6 du parcours Développeur web chez Openclassrooms porte sur 
 
 -   Ouvrir le terminal sur ce dossier.
 -   Pour utiliser le serveur, chargez le package nodemon : `npm install -g nodemon`.
+-   Modifier le fichier .env_sample en .env (pour des raison de sécurité, ce fichier n'est pas mis en ligne mais seulement donné pour l'évaluation du projet).
 -   Puis lancez le serveur: `npm run dev`.
 
 #### Si les packages sont déja instalés
